@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio | Computer Science Student</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Particle Background Canvas -->
+    <canvas id="particles"></canvas>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#hero" class="nav-logo">Portfolio</a>
+            <ul class="nav-menu">
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#skills" class="nav-link">Skills</a></li>
+                <li><a href="#projects" class="nav-link">Projects</a></li>
+                <li><a href="#education" class="nav-link">Education</a></li>
+                <li><button class="nav-contact-btn" onclick="openModal()">Contact</button></li>
+            </ul>
+            <button class="nav-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Scroll Indicator -->
+    <div class="scroll-indicator"></div>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+        <div class="hero-content">
+            <div class="hero-image-wrapper">
+                <img src="profile.jpg" alt="Profile Photo" class="hero-image">
+                <div class="hero-image-glow"></div>
+            </div>
+            <div class="hero-text">
+                <p class="hero-greeting">Hello, I'm</p>
+                <h1 class="hero-name">Computer Science Student</h1>
+                <p class="hero-title">AI & Cybersecurity Enthusiast</p>
+                <p class="hero-tagline">Crafting intelligent solutions through code and creativity</p>
+                <div class="hero-buttons">
+                    <a href="#projects" class="btn btn-primary">View Projects</a>
+                    <button class="btn btn-secondary" onclick="openModal()">Contact Me</button>
+                </div>
+            </div>
+        </div>
+        <div class="hero-scroll-hint">
+            <span>Scroll to explore</span>
+            <div class="scroll-arrow"></div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section about">
+        <div class="container">
+            <h2 class="section-title">About Me</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>I'm a passionate Computer Science student based in Poland, deeply fascinated by the realms of Artificial Intelligence and Cybersecurity. My journey in technology is driven by curiosity and a desire to build solutions that make a difference.</p>
+                    <p>With a strong foundation in multiple programming languages and frameworks, I enjoy tackling complex problems and transforming ideas into functional, elegant applications. I believe in writing clean, maintainable code and continuously expanding my knowledge.</p>
+                </div>
+                <div class="about-info">
+                    <div class="info-card">
+                        <span class="info-label">Location</span>
+                        <span class="info-value">Poland</span>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-label">Focus</span>
+                        <span class="info-value">AI & Security</span>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-label">Status</span>
+                        <span class="info-value">Open to Opportunities</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="section skills">
+        <div class="container">
+            <h2 class="section-title">Technical Skills</h2>
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <h3 class="skill-category-title">Programming Languages</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">C++</span>
+                        <span class="skill-tag">C#</span>
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">Java</span>
+                        <span class="skill-tag">JavaScript</span>
+                        <span class="skill-tag">PHP</span>
+                        <span class="skill-tag">Ruby</span>
+                        <span class="skill-tag">C</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3 class="skill-category-title">Front-End</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">HTML5</span>
+                        <span class="skill-tag">CSS3</span>
+                        <span class="skill-tag">Flexbox</span>
+                        <span class="skill-tag">CSS Grid</span>
+                        <span class="skill-tag">Responsive Design</span>
+                        <span class="skill-tag">UI Animations</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3 class="skill-category-title">Frameworks & Libraries</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">React</span>
+                        <span class="skill-tag">Vue</span>
+                        <span class="skill-tag">Nuxt</span>
+                        <span class="skill-tag">Bootstrap</span>
+                        <span class="skill-tag">MVC Architecture</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3 class="skill-category-title">Back-End</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">PHP</span>
+                        <span class="skill-tag">Laravel</span>
+                        <span class="skill-tag">Django</span>
+                        <span class="skill-tag">MySQL</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3 class="skill-category-title">AI & Logic</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Prolog</span>
+                        <span class="skill-tag">Pattern Recognition</span>
+                        <span class="skill-tag">Rule-Based Systems</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3 class="skill-category-title">Tools</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Git</span>
+                        <span class="skill-tag">VS Code</span>
+                        <span class="skill-tag">Visual Studio</span>
+                        <span class="skill-tag">Photoshop</span>
+                        <span class="skill-tag">Canva</span>
+                        <span class="skill-tag">Cisco Packet Tracer</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="section projects">
+        <div class="container">
+            <h2 class="section-title">Featured Projects</h2>
+            <div class="projects-grid">
+                <article class="project-card">
+                    <div class="project-content">
+                        <h3 class="project-title">AI Chatbot</h3>
+                        <p class="project-description">Intelligent conversational agent built with rule-based logic for natural language processing and response generation.</p>
+                        <div class="project-tech">
+                            <span>Prolog</span>
+                            <span>AI</span>
+                            <span>NLP</span>
+                        </div>
+                    </div>
+                </article>
+                <article class="project-card">
+                    <div class="project-content">
+                        <h3 class="project-title">Movie Review Platform</h3>
+                        <p class="project-description">Full-stack web application for discovering, reviewing, and rating movies with user authentication and database integration.</p>
+                        <div class="project-tech">
+                            <span>React</span>
+                            <span>PHP</span>
+                            <span>MySQL</span>
+                        </div>
+                    </div>
+                </article>
+                <article class="project-card">
+                    <div class="project-content">
+                        <h3 class="project-title">AI Letter Recognition</h3>
+                        <p class="project-description">Machine learning system for recognizing handwritten letters using pattern recognition algorithms and neural network concepts.</p>
+                        <div class="project-tech">
+                            <span>Java</span>
+                            <span>AI</span>
+                            <span>Pattern Recognition</span>
+                        </div>
+                    </div>
+                </article>
+                <article class="project-card">
+                    <div class="project-content">
+                        <h3 class="project-title">OpenGL Tetris Game</h3>
+                        <p class="project-description">Classic Tetris game implementation with modern graphics rendering using OpenGL for smooth animations and gameplay.</p>
+                        <div class="project-tech">
+                            <span>C++</span>
+                            <span>OpenGL</span>
+                            <span>Game Dev</span>
+                        </div>
+                    </div>
+                </article>
+                <article class="project-card">
+                    <div class="project-content">
+                        <h3 class="project-title">Hotel Network Simulation</h3>
+                        <p class="project-description">Comprehensive network infrastructure design and simulation for a hotel environment with security protocols.</p>
+                        <div class="project-tech">
+                            <span>Cisco</span>
+                            <span>Networking</span>
+                            <span>Security</span>
+                        </div>
+                    </div>
+                </article>
+                <article class="project-card">
+                    <div class="project-content">
+                        <h3 class="project-title">Language School Website</h3>
+                        <p class="project-description">Modern, responsive website for a language school featuring course information, enrollment, and contact functionality.</p>
+                        <div class="project-tech">
+                            <span>HTML</span>
+                            <span>CSS</span>
+                            <span>JavaScript</span>
+                        </div>
+                    </div>
+                </article>
+                <article class="project-card">
+                    <div class="project-content">
+                        <h3 class="project-title">Ice Cream Website</h3>
+                        <p class="project-description">Visually appealing e-commerce website for an ice cream shop with product showcase and ordering system.</p>
+                        <div class="project-tech">
+                            <span>HTML</span>
+                            <span>CSS</span>
+                            <span>JavaScript</span>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Education Section -->
+    <section id="education" class="section education">
+        <div class="container">
+            <h2 class="section-title">Education & Achievements</h2>
+            <div class="education-grid">
+                <div class="education-card">
+                    <div class="education-icon">🎓</div>
+                    <h3 class="education-title">Bachelor of Computer Science</h3>
+                    <p class="education-place">Poland</p>
+                    <p class="education-date">2023 – Present</p>
+                </div>
+                <div class="education-card achievement">
+                    <div class="education-icon">🏆</div>
+                    <h3 class="education-title">Presidential Scholarship</h3>
+                    <p class="education-place">Academic Excellence</p>
+                    <p class="education-date">2022</p>
+                </div>
+            </div>
+            <div class="languages-section">
+                <h3 class="languages-title">Languages</h3>
+                <div class="languages-grid">
+                    <div class="language-item">
+                        <span class="language-name">Mongolian</span>
+                        <span class="language-level">Native</span>
+                    </div>
+                    <div class="language-item">
+                        <span class="language-name">English</span>
+                        <span class="language-level">B2/C1</span>
+                    </div>
+                    <div class="language-item">
+                        <span class="language-name">Polish</span>
+                        <span class="language-level">B1/B2</span>
+                    </div>
+                    <div class="language-item">
+                        <span class="language-name">Japanese</span>
+                        <span class="language-level">JLPT N4</span>
+                    </div>
+                    <div class="language-item">
+                        <span class="language-name">Korean</span>
+                        <span class="language-level">Beginner</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Portfolio. Crafted with passion.</p>
+        </div>
+    </footer>
+
+    <!-- Contact Modal -->
+    <div class="modal-overlay" id="contactModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <h2 class="modal-title">Get in Touch</h2>
+            <p class="modal-subtitle">I'd love to hear from you. Send me a message!</p>
+            <form id="contactForm" class="contact-form">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required placeholder="Your name">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" required placeholder="Your message..." rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="file">Attachment (optional)</label>
+                    <input type="file" id="file" name="file">
+                </div>
+                <button type="submit" class="btn btn-primary btn-submit">Send Message</button>
+            </form>
+            <div class="contact-info-modal">
+                <p><strong>Phone:</strong> +48 660 754 459</p>
+                <p><strong>Location:</strong> Poland</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
