@@ -365,8 +365,401 @@ window.addEventListener('load', () => {
 });
 
 /* ========================================
+   Particle Text Animation for Contact Section
+======================================== */
+class ParticleTextAnimation {
+    constructor(canvas, text) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        this.text = text;
+        this.particles = [];
+        this.mouse = { x: null, y: null, radius: 100 };
+        this.animationPhase = 'formed'; // 'formed', 'scattering', 'flowing', 'reforming'
+        this.phaseTimer = 0;
+        this.phaseDuration = {
+            formed: 3000,
+            scattering: 1500,
+            flowing: 2000,
+            reforming: 1500
+        };
+        this.isHovering = false;
+        this.initialized = false;
+        
+        this.init();
+    }
+
+    init() {
+        this.resize();
+        this.setupEventListeners();
+        this.createParticlesFromText();
+        this.animate();
+    }
+
+    resize() {
+        const wrapper = this.canvas.parentElement;
+        const rect = wrapper.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        
+        this.canvas.width = rect.width * dpr;
+        this.canvas.height = rect.height * dpr;
+        this.canvas.style.width = rect.width + 'px';
+        this.canvas.style.height = rect.height + 'px';
+        this.ctx.scale(dpr, dpr);
+        
+        this.width = rect.width;
+        this.height = rect.height;
+        
+        if (this.initialized) {
+            this.createParticlesFromText();
+        }
+    }
+
+    createParticlesFromText() {
+        this.particles = [];
+
+        const W = this.width;
+        const H = this.height;
+
+        // Use an off-screen canvas at logical (CSS) resolution to avoid dpr mismatch
+        const offscreen = document.createElement('canvas');
+        offscreen.width  = W;
+        offscreen.height = H;
+        const offCtx = offscreen.getContext('2d');
+
+        const fontSize = Math.min(W / 10, 60);
+
+        offCtx.clearRect(0, 0, W, H);
+        offCtx.fillStyle = '#ffffff';
+        offCtx.font = `bold ${fontSize}px Inter, sans-serif`;
+        offCtx.textAlign = 'center';
+        offCtx.textBaseline = 'middle';
+        offCtx.fillText(this.text, W / 2, H / 2);
+
+        const imageData = offCtx.getImageData(0, 0, W, H);
+        const data = imageData.data;
+
+        const gap = 4;
+        const particleSize = 2;
+
+        for (let y = 0; y < H; y += gap) {
+            for (let x = 0; x < W; x += gap) {
+                const index = (y * W + x) * 4;
+                if (data[index + 3] > 128) {
+                    this.particles.push(new TextParticle(x, y, particleSize, W, H));
+                }
+            }
+        }
+
+        this.initialized = true;
+    }
+
+    setupEventListeners() {
+        window.addEventListener('resize', () => this.resize());
+        
+        this.canvas.addEventListener('mouseenter', () => {
+            this.isHovering = true;
+            if (this.animationPhase === 'formed') {
+                this.startPhase('scattering');
+            }
+        });
+        
+        this.canvas.addEventListener('mouseleave', () => {
+            this.isHovering = false;
+            this.mouse.x = null;
+            this.mouse.y = null;
+        });
+        
+        this.canvas.addEventListener('mousemove', (e) => {
+            const rect = this.canvas.getBoundingClientRect();
+            this.mouse.x = e.clientX - rect.left;
+            this.mouse.y = e.clientY - rect.top;
+        });
+    }
+
+    startPhase(phase) {
+        this.animationPhase = phase;
+        this.phaseTimer = 0;
+        
+        if (phase === 'scattering') {
+            this.particles.forEach(p => p.scatter());
+        } else if (phase === 'flowing') {
+            this.particles.forEach(p => p.startFlow());
+        } else if (phase === 'reforming') {
+            this.particles.forEach(p => p.reform());
+        }
+    }
+
+    updatePhase(deltaTime) {
+        this.phaseTimer += deltaTime;
+        
+        const currentDuration = this.phaseDuration[this.animationPhase];
+        
+        if (this.phaseTimer >= currentDuration) {
+            switch (this.animationPhase) {
+                case 'formed':
+                    if (!this.isHovering) {
+                        this.startPhase('scattering');
+                    }
+                    break;
+                case 'scattering':
+                    this.startPhase('flowing');
+                    break;
+                case 'flowing':
+                    this.startPhase('reforming');
+                    break;
+                case 'reforming':
+                    this.animationPhase = 'formed';
+                    this.phaseTimer = 0;
+                    break;
+            }
+        }
+    }
+
+    animate(timestamp = 0) {
+        const deltaTime = timestamp - (this.lastTimestamp || 0);
+        this.lastTimestamp = timestamp;
+        
+        this.ctx.clearRect(0, 0, this.width, this.height);
+        
+        this.updatePhase(deltaTime);
+        
+        // Draw particles
+        this.particles.forEach(particle => {
+            particle.update(this.mouse, this.animationPhase, this.phaseTimer / this.phaseDuration[this.animationPhase]);
+            particle.draw(this.ctx);
+        });
+        
+        requestAnimationFrame((t) => this.animate(t));
+    }
+}
+
+class TextParticle {
+    constructor(x, y, size, canvasWidth, canvasHeight) {
+        this.originX = x;
+        this.originY = y;
+        this.x = x;
+        this.y = y;
+        this.size = size;
+        this.canvasWidth = canvasWidth;
+        this.canvasHeight = canvasHeight;
+        
+        // Animation properties
+        this.scatterX = 0;
+        this.scatterY = 0;
+        this.flowAngle = Math.random() * Math.PI * 2;
+        this.flowRadius = 0;
+        this.flowSpeed = 0.5 + Math.random() * 1;
+        
+        // Color gradient based on position
+        this.hue = 210 + (x / canvasWidth) * 60; // Blue to purple gradient
+        this.baseColor = `hsla(${this.hue}, 80%, 65%, 1)`;
+    }
+
+    scatter() {
+        const angle = Math.random() * Math.PI * 2;
+        const distance = 50 + Math.random() * 100;
+        this.scatterX = Math.cos(angle) * distance;
+        this.scatterY = Math.sin(angle) * distance;
+    }
+
+    startFlow() {
+        this.flowAngle = Math.random() * Math.PI * 2;
+        this.flowRadius = 20 + Math.random() * 40;
+    }
+
+    reform() {
+        // Reset scatter values gradually
+    }
+
+    update(mouse, phase, progress) {
+        let targetX = this.originX;
+        let targetY = this.originY;
+        
+        switch (phase) {
+            case 'formed':
+                // Slight floating effect when formed
+                targetX = this.originX + Math.sin(Date.now() * 0.001 + this.originX * 0.01) * 2;
+                targetY = this.originY + Math.cos(Date.now() * 0.001 + this.originY * 0.01) * 2;
+                break;
+                
+            case 'scattering':
+                // Ease out to scattered position
+                const scatterEase = this.easeOutCubic(progress);
+                targetX = this.originX + this.scatterX * scatterEase;
+                targetY = this.originY + this.scatterY * scatterEase;
+                break;
+                
+            case 'flowing':
+                // Circular flowing motion
+                this.flowAngle += this.flowSpeed * 0.02;
+                const flowX = Math.cos(this.flowAngle) * this.flowRadius;
+                const flowY = Math.sin(this.flowAngle) * this.flowRadius;
+                targetX = this.originX + this.scatterX + flowX;
+                targetY = this.originY + this.scatterY + flowY;
+                break;
+                
+            case 'reforming':
+                // Ease back to original position
+                const reformEase = this.easeInOutCubic(progress);
+                const currentScatterX = this.scatterX + Math.cos(this.flowAngle) * this.flowRadius;
+                const currentScatterY = this.scatterY + Math.sin(this.flowAngle) * this.flowRadius;
+                targetX = this.originX + currentScatterX * (1 - reformEase);
+                targetY = this.originY + currentScatterY * (1 - reformEase);
+                break;
+        }
+        
+        // Mouse repulsion
+        if (mouse.x !== null && mouse.y !== null) {
+            const dx = this.x - mouse.x;
+            const dy = this.y - mouse.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < mouse.radius) {
+                const force = (mouse.radius - distance) / mouse.radius;
+                const angle = Math.atan2(dy, dx);
+                targetX += Math.cos(angle) * force * 30;
+                targetY += Math.sin(angle) * force * 30;
+            }
+        }
+        
+        // Smooth interpolation
+        this.x += (targetX - this.x) * 0.1;
+        this.y += (targetY - this.y) * 0.1;
+    }
+
+    draw(ctx) {
+        // Dynamic opacity based on distance from origin
+        const dx = this.x - this.originX;
+        const dy = this.y - this.originY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const opacity = Math.max(0.3, 1 - distance / 200);
+        
+        ctx.fillStyle = `hsla(${this.hue}, 80%, 65%, ${opacity})`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    easeOutCubic(t) {
+        return 1 - Math.pow(1 - t, 3);
+    }
+
+    easeInOutCubic(t) {
+        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+}
+
+/* ========================================
+   Initialize Particle Text Animation
+======================================== */
+document.addEventListener('DOMContentLoaded', () => {
+    const textCanvas = document.getElementById('textParticles');
+    if (textCanvas) {
+        // Small delay to ensure layout is complete
+        setTimeout(() => {
+            new ParticleTextAnimation(textCanvas, "Let's Work Together");
+        }, 100);
+    }
+});
+
+/* ========================================
+   Custom Cursor
+======================================== */
+(function initCustomCursor() {
+    // Skip on touch devices
+    if (window.matchMedia('(hover: none), (pointer: coarse)').matches) return;
+
+    const dot  = document.getElementById('cursorDot');
+    const ring = document.getElementById('cursorRing');
+    if (!dot || !ring) return;
+
+    // Current mouse position (instant)
+    let mouseX = window.innerWidth  / 2;
+    let mouseY = window.innerHeight / 2;
+
+    // Ring trailing position (lerped)
+    let ringX = mouseX;
+    let ringY = mouseY;
+
+    // Lerp factor for the trailing ring
+    const LERP = 0.12;
+
+    // Track mouse
+    document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    });
+
+    // Hover detection on interactive elements
+    const interactiveSelector = 'a, button, [role="button"], label, input, textarea, select, .project-card, .skill-tag, .nav-logo';
+
+    document.addEventListener('mouseover', (e) => {
+        if (e.target.closest(interactiveSelector)) {
+            dot.classList.add('hovering');
+            ring.classList.add('hovering');
+
+            // Magnetic pull: nudge ring toward element center
+            const el = e.target.closest(interactiveSelector);
+            if (el) {
+                const rect = el.getBoundingClientRect();
+                const elCX = rect.left + rect.width  / 2;
+                const elCY = rect.top  + rect.height / 2;
+                const dx = (elCX - mouseX) * 0.15;
+                const dy = (elCY - mouseY) * 0.15;
+                ringX += dx;
+                ringY += dy;
+            }
+        }
+    });
+
+    document.addEventListener('mouseout', (e) => {
+        if (e.target.closest(interactiveSelector)) {
+            dot.classList.remove('hovering');
+            ring.classList.remove('hovering');
+        }
+    });
+
+    // Click feedback
+    document.addEventListener('mousedown', () => {
+        dot.classList.add('clicking');
+        ring.classList.add('clicking');
+    });
+
+    document.addEventListener('mouseup', () => {
+        dot.classList.remove('clicking');
+        ring.classList.remove('clicking');
+    });
+
+    // Hide when cursor leaves window
+    document.addEventListener('mouseleave', () => {
+        dot.style.opacity  = '0';
+        ring.style.opacity = '0';
+    });
+
+    document.addEventListener('mouseenter', () => {
+        dot.style.opacity  = '1';
+        ring.style.opacity = '1';
+    });
+
+    // Animation loop using rAF
+    function animate() {
+        // Dot follows instantly
+        dot.style.transform = `translate3d(calc(${mouseX}px - 50%), calc(${mouseY}px - 50%), 0)`;
+
+        // Ring lerps toward mouse
+        ringX += (mouseX - ringX) * LERP;
+        ringY += (mouseY - ringY) * LERP;
+        ring.style.transform = `translate3d(calc(${ringX}px - 50%), calc(${ringY}px - 50%), 0)`;
+
+        requestAnimationFrame(animate);
+    }
+
+    animate();
+})();
+
+/* ========================================
    Console Easter Egg
 ======================================== */
-console.log('%c👋 Hello there, curious developer!', 'font-size: 24px; font-weight: bold; color: #3b82f6;');
+console.log('%cHello there, curious developer!', 'font-size: 24px; font-weight: bold; color: #3b82f6;');
 console.log('%cThis portfolio was crafted with pure HTML, CSS, and JavaScript.', 'font-size: 14px; color: #71717a;');
 console.log('%cFeel free to explore the code!', 'font-size: 14px; color: #71717a;');
