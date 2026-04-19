@@ -10,6 +10,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Custom Cursor -->
+    <div class="cursor-dot" id="cursorDot"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+
     <!-- Particle Background Canvas -->
     <canvas id="particles"></canvas>
 
@@ -22,7 +26,7 @@
                 <li><a href="#skills" class="nav-link">Skills</a></li>
                 <li><a href="#projects" class="nav-link">Projects</a></li>
                 <li><a href="#education" class="nav-link">Education</a></li>
-                <li><button class="nav-contact-btn" onclick="openModal()">Contact</button></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
             <button class="nav-toggle" aria-label="Toggle menu">
                 <span></span>
@@ -39,8 +43,12 @@
     <section id="hero" class="hero">
         <div class="hero-content">
             <div class="hero-image-wrapper">
-                <img src="profile.jpg" alt="Profile Photo" class="hero-image">
                 <div class="hero-image-glow"></div>
+                <div class="hero-image-frame">
+                    <div class="hero-image-container">
+                        <img src="profile.jpg" alt="Profile Photo" class="hero-image">
+                    </div>
+                </div>
             </div>
             <div class="hero-text">
                 <p class="hero-greeting">Hello, I'm</p>
@@ -285,6 +293,21 @@
                         <span class="language-level">Beginner</span>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section with Particle Text Animation -->
+    <section id="contact" class="section contact-section">
+        <div class="container">
+            <div class="contact-canvas-wrapper">
+                <canvas id="textParticles"></canvas>
+                <div class="contact-fallback-text">Let&apos;s Work Together</div>
+            </div>
+            <p class="contact-description">Have a project in mind or want to collaborate? I&apos;d love to hear from you.</p>
+            <div class="contact-buttons">
+                <button class="btn btn-primary btn-lg" onclick="openModal()">Get in Touch</button>
+                <a href="mailto:contact@portfolio.com" class="btn btn-secondary btn-lg">Send Email</a>
             </div>
         </div>
     </section>
